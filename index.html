@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bycatch Pitch Structure</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Sora:wght@500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --surface-0: #020a16;
+      --surface-1: #06203b;
+      --surface-2: #0d3f66;
+      --surface-3: #11567d;
+      --ink-strong: #f0f9ff;
+      --ink-soft: #b9d5e8;
+      --line: rgba(194, 226, 247, 0.22);
+      --accent-cyan: #56d4ff;
+      --accent-coral: #ff7562;
+      --accent-lime: #9be589;
+      --panel: rgba(2, 13, 25, 0.72);
+      --radius: 18px;
+      --max: 1100px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: "Outfit", "Segoe UI", sans-serif;
+      color: var(--ink-strong);
+      background:
+        radial-gradient(circle at 20% -10%, rgba(86, 212, 255, 0.23), transparent 35%),
+        radial-gradient(circle at 90% 8%, rgba(20, 108, 178, 0.28), transparent 31%),
+        linear-gradient(180deg, #0a385c 0%, #062744 20%, #041c32 42%, #031124 68%, #020a16 100%);
+      overflow-x: hidden;
+      overflow-y: auto;
+      scroll-snap-type: y mandatory;
+    }
+
+    .depth-overlay {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -1;
+      background-image:
+        linear-gradient(rgba(173, 212, 237, 0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(173, 212, 237, 0.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+      animation: drift 22s linear infinite;
+    }
+
+    .bubble {
+      position: fixed;
+      bottom: -80px;
+      width: 10px;
+      height: 10px;
+      border: 1px solid rgba(168, 235, 255, 0.5);
+      border-radius: 999px;
+      opacity: 0.35;
+      z-index: -1;
+      animation: bubbleUp linear infinite;
+    }
+
+    .b1 { left: 8%; animation-duration: 16s; animation-delay: -3s; }
+    .b2 { left: 28%; animation-duration: 13s; animation-delay: -8s; width: 14px; height: 14px; }
+    .b3 { left: 56%; animation-duration: 18s; animation-delay: -1s; }
+    .b4 { left: 74%; animation-duration: 15s; animation-delay: -10s; width: 12px; height: 12px; }
+    .b5 { left: 90%; animation-duration: 19s; animation-delay: -7s; }
+
+    .creature {
+      position: fixed;
+      z-index: -1;
+      pointer-events: none;
+      opacity: 0.24;
+      filter: drop-shadow(0 0 8px rgba(123, 208, 255, 0.25));
+      animation: swimAcross linear infinite;
+    }
+
+    .creature svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .fish-a {
+      width: 90px;
+      top: 20%;
+      left: -120px;
+      animation-duration: 30s;
+      animation-delay: -8s;
+    }
+
+    .fish-b {
+      width: 68px;
+      top: 38%;
+      left: -90px;
+      animation-duration: 24s;
+      animation-delay: -15s;
+      opacity: 0.28;
+    }
+
+    .fish-c {
+      width: 120px;
+      top: 62%;
+      left: -160px;
+      animation-duration: 36s;
+      animation-delay: -3s;
+      opacity: 0.2;
+    }
+
+    .jelly {
+      width: 84px;
+      left: 84%;
+      top: 78%;
+      opacity: 0.22;
+      animation: jellyFloat 14s ease-in-out infinite;
+    }
+
+    .ray {
+      width: 150px;
+      top: 12%;
+      left: -200px;
+      opacity: 0.17;
+      animation-duration: 40s;
+      animation-delay: -20s;
+    }
+
+    .depth-meter {
+      position: fixed;
+      top: 24px;
+      left: clamp(10px, 2vw, 24px);
+      width: 96px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(1, 9, 20, 0.62);
+      backdrop-filter: blur(4px);
+      padding: 0.75rem;
+      z-index: 8;
+    }
+
+    .depth-meter h4 {
+      font-family: "Sora", sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin-bottom: 0.55rem;
+    }
+
+    .depth-value {
+      font-family: "Sora", sans-serif;
+      font-size: 1.1rem;
+      color: var(--accent-cyan);
+      margin-bottom: 0.55rem;
+    }
+
+    .depth-track {
+      width: 100%;
+      height: 6px;
+      border-radius: 8px;
+      background: rgba(138, 194, 222, 0.2);
+      overflow: hidden;
+    }
+
+    .depth-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-cyan), #8be8ff);
+      transition: width 180ms ease-out;
+    }
+
+    .page {
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    .slide {
+      min-height: 100vh;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      padding: clamp(1.2rem, 4vw, 2.8rem) 0;
+    }
+
+    .hero {
+      border: 1px solid var(--line);
+      background: rgba(3, 16, 31, 0.5);
+      border-radius: 24px;
+      padding: clamp(1.2rem, 3.8vw, 3rem);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+      width: min(1180px, 94%);
+    }
+
+    .hero-layout {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: clamp(1.2rem, 3vw, 2.4rem);
+      align-items: center;
+    }
+
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      border: 1px solid rgba(135, 203, 236, 0.42);
+      border-radius: 999px;
+      padding: 0.33rem 0.8rem;
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #d2ecfb;
+    }
+
+    h1,
+    h2,
+    h3 {
+      font-family: "Sora", sans-serif;
+      letter-spacing: 0.01em;
+    }
+
+    h1 {
+      margin-top: 1rem;
+      font-size: clamp(2.05rem, 6vw, 4rem);
+      line-height: 1.03;
+      max-width: 13ch;
+    }
+
+    .subhead {
+      margin-top: 0;
+      max-width: 68ch;
+      line-height: 1.7;
+      color: var(--ink-soft);
+      font-size: clamp(1rem, 2vw, 1.18rem);
+    }
+
+    .timeline {
+      margin-top: 1.3rem;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.7rem;
+    }
+
+    .slot {
+      border: 1px solid rgba(174, 219, 244, 0.26);
+      border-radius: 14px;
+      background: rgba(3, 18, 36, 0.62);
+      padding: 0.78rem;
+    }
+
+    .slot small {
+      color: var(--accent-cyan);
+      text-transform: uppercase;
+      font-size: 0.68rem;
+      letter-spacing: 0.09em;
+    }
+
+    .slot p {
+      margin-top: 0.32rem;
+      color: #ecf8ff;
+      line-height: 1.5;
+      font-size: 0.96rem;
+    }
+
+    .slot .duration {
+      display: block;
+      margin-top: 0.26rem;
+      color: #91d7f5;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .dive-section {
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: var(--panel);
+      padding: clamp(1rem, 3vw, 1.7rem);
+      backdrop-filter: blur(5px);
+      transform: translateY(18px);
+      opacity: 0;
+      transition: transform 480ms ease, opacity 480ms ease;
+      width: min(1180px, 94%);
+    }
+
+    .dive-section.revealed {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 0.75rem;
+      align-items: center;
+      margin-bottom: 0.9rem;
+    }
+
+    .meta .tag {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #d8efff;
+      border: 1px solid rgba(157, 214, 245, 0.4);
+      border-radius: 999px;
+      padding: 0.28rem 0.7rem;
+    }
+
+    .meta .time {
+      color: var(--accent-lime);
+      font-family: "Sora", sans-serif;
+      font-size: 0.88rem;
+    }
+
+    h2 {
+      font-size: clamp(1.3rem, 3.4vw, 2rem);
+      margin-bottom: 0.75rem;
+    }
+
+    .dive-section p {
+      color: var(--ink-soft);
+      line-height: 1.7;
+      max-width: 74ch;
+    }
+
+    .stats {
+      margin-top: 0.9rem;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.7rem;
+    }
+
+    .stat {
+      border: 1px solid rgba(183, 226, 248, 0.26);
+      border-radius: 14px;
+      padding: 0.9rem;
+      background: rgba(8, 33, 58, 0.65);
+    }
+
+    .stat strong {
+      display: block;
+      font-size: clamp(1.45rem, 3vw, 2rem);
+      color: #f5fcff;
+      margin-bottom: 0.3rem;
+    }
+
+    .stat span {
+      color: #cae5f4;
+      font-size: 0.88rem;
+      line-height: 1.45;
+    }
+
+    .solution-track {
+      margin-top: 1rem;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.66rem;
+    }
+
+    .node {
+      border: 1px solid rgba(155, 213, 246, 0.22);
+      border-radius: 14px;
+      background: rgba(7, 30, 53, 0.64);
+      padding: 0.86rem;
+      min-height: 130px;
+      position: relative;
+    }
+
+    .node:not(:last-child)::after {
+      content: ">";
+      position: absolute;
+      right: -0.48rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(202, 234, 251, 0.82);
+      font-weight: 700;
+      font-size: 0.92rem;
+      background: #0f3f63;
+      border-radius: 999px;
+      padding: 0.02rem 0.3rem;
+      border: 1px solid rgba(168, 215, 240, 0.32);
+    }
+
+    .node h3 {
+      font-size: 0.98rem;
+      color: #f0faff;
+      margin-bottom: 0.36rem;
+    }
+
+    .node p {
+      font-size: 0.88rem;
+      color: #c8e5f6;
+      line-height: 1.55;
+    }
+
+    .points {
+      margin-top: 0.95rem;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.7rem;
+    }
+
+    .point {
+      border: 1px solid rgba(178, 221, 246, 0.2);
+      border-radius: 14px;
+      padding: 0.82rem;
+      background: rgba(7, 28, 49, 0.62);
+    }
+
+    .point h3 {
+      color: #e9f8ff;
+      font-size: 1rem;
+      margin-bottom: 0.34rem;
+    }
+
+    .point p {
+      color: #bfdced;
+      font-size: 0.88rem;
+      line-height: 1.56;
+    }
+
+    .future-band {
+      margin-top: 1rem;
+      border: 1px solid rgba(206, 233, 249, 0.2);
+      border-radius: 14px;
+      padding: 0.9rem;
+      background: linear-gradient(110deg, rgba(8, 37, 62, 0.8), rgba(15, 72, 113, 0.5));
+    }
+
+    .future-band p {
+      color: #e3f4ff;
+      line-height: 1.7;
+    }
+
+    @keyframes bubbleUp {
+      from {
+        transform: translateY(0) scale(0.7);
+        opacity: 0.18;
+      }
+      to {
+        transform: translateY(-110vh) scale(1.2);
+        opacity: 0.5;
+      }
+    }
+
+    @keyframes drift {
+      from { transform: translateY(0); }
+      to { transform: translateY(48px); }
+    }
+
+    @keyframes swimAcross {
+      from {
+        transform: translateX(0) translateY(0) scaleX(-1);
+      }
+      50% {
+        transform: translateX(55vw) translateY(-14px) scaleX(-1);
+      }
+      to {
+        transform: translateX(118vw) translateY(8px) scaleX(-1);
+      }
+    }
+
+    @keyframes jellyFloat {
+      0% {
+        transform: translateY(0) translateX(0);
+      }
+      25% {
+        transform: translateY(-20px) translateX(-8px);
+      }
+      50% {
+        transform: translateY(-8px) translateX(6px);
+      }
+      75% {
+        transform: translateY(-24px) translateX(-4px);
+      }
+      100% {
+        transform: translateY(0) translateX(0);
+      }
+    }
+
+    @media (max-width: 980px) {
+      .hero-layout,
+      .timeline,
+      .solution-track,
+      .points,
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .subhead {
+        margin-top: 1rem;
+      }
+
+      .node:not(:last-child)::after {
+        content: "v";
+        right: 50%;
+        top: auto;
+        bottom: -0.58rem;
+        transform: translateX(50%);
+      }
+
+      .depth-meter {
+        left: 12px;
+        top: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="depth-overlay" aria-hidden="true"></div>
+  <div class="bubble b1" aria-hidden="true"></div>
+  <div class="bubble b2" aria-hidden="true"></div>
+  <div class="bubble b3" aria-hidden="true"></div>
+  <div class="bubble b4" aria-hidden="true"></div>
+  <div class="bubble b5" aria-hidden="true"></div>
+
+  <div class="creature fish-a" aria-hidden="true">
+    <svg viewBox="0 0 180 80" xmlns="http://www.w3.org/2000/svg">
+      <path d="M10 40C30 20 70 16 106 27L142 12L138 32L170 40L138 48L142 68L106 53C70 64 30 60 10 40Z" fill="#8ad5ff" />
+      <circle cx="46" cy="34" r="3" fill="#02233b" />
+    </svg>
+  </div>
+
+  <div class="creature fish-b" aria-hidden="true">
+    <svg viewBox="0 0 150 70" xmlns="http://www.w3.org/2000/svg">
+      <path d="M8 35C24 20 54 18 82 26L112 14L108 30L140 35L108 40L112 56L82 44C54 52 24 50 8 35Z" fill="#74c7ea" />
+      <circle cx="38" cy="30" r="2.8" fill="#03253a" />
+    </svg>
+  </div>
+
+  <div class="creature fish-c" aria-hidden="true">
+    <svg viewBox="0 0 220 92" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 46C38 20 88 16 136 31L170 16L164 39L208 46L164 53L170 76L136 61C88 76 38 72 12 46Z" fill="#9ec6ff" />
+      <circle cx="58" cy="38" r="3.5" fill="#03263d" />
+    </svg>
+  </div>
+
+  <div class="creature ray" aria-hidden="true">
+    <svg viewBox="0 0 260 120" xmlns="http://www.w3.org/2000/svg">
+      <path d="M18 70C50 30 100 20 130 48C160 20 210 30 242 70C204 74 175 82 148 98L130 112L112 98C86 82 56 74 18 70Z" fill="#8fb7d7" />
+      <path d="M124 78C120 96 114 108 106 118" stroke="#8fb7d7" stroke-width="4" fill="none" stroke-linecap="round" />
+    </svg>
+  </div>
+
+  <div class="creature jelly" aria-hidden="true">
+    <svg viewBox="0 0 120 160" xmlns="http://www.w3.org/2000/svg">
+      <path d="M18 68C18 35 36 16 60 16C84 16 102 35 102 68H18Z" fill="#9fe6ff" />
+      <path d="M30 68C30 90 34 112 30 144" stroke="#9fe6ff" stroke-width="4" fill="none" stroke-linecap="round" />
+      <path d="M48 68C48 96 50 120 46 152" stroke="#9fe6ff" stroke-width="4" fill="none" stroke-linecap="round" />
+      <path d="M66 68C66 96 68 120 64 152" stroke="#9fe6ff" stroke-width="4" fill="none" stroke-linecap="round" />
+      <path d="M84 68C84 90 90 112 86 144" stroke="#9fe6ff" stroke-width="4" fill="none" stroke-linecap="round" />
+    </svg>
+  </div>
+
+  <aside class="depth-meter" aria-hidden="true">
+    <h4>Pitch Dive</h4>
+    <div class="depth-value" id="depthValue">0m</div>
+    <div class="depth-track">
+      <div class="depth-fill" id="depthFill"></div>
+    </div>
+  </aside>
+
+  <main class="page">
+    <header class="hero slide" id="intro">
+      <div class="hero-layout">
+        <div>
+          <span class="kicker">OceanEye presents</span>
+          <h1>Ecological accountability should not end at recording.</h1>
+        </div>
+        <div>
+          <p class="subhead">
+            Presentation structure tuned to your talk time. The story descends from problem visibility into solution depth,
+            then resurfaces with strategic differentiation and future outlook.
+          </p>
+          <div class="timeline" aria-label="Presentation structure and timing">
+            <article class="slot">
+              <small>01</small>
+              <p>Problem statement<span class="duration">30s</span></p>
+            </article>
+            <article class="slot">
+              <small>02</small>
+              <p>Our solution<span class="duration">2m 30s</span></p>
+            </article>
+            <article class="slot">
+              <small>03</small>
+              <p>How we differentiate<span class="duration">1m</span></p>
+            </article>
+            <article class="slot">
+              <small>04</small>
+              <p>Where the future is heading<span class="duration">1m</span></p>
+            </article>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section class="dive-section slide" id="problem" data-depth="120">
+      <div class="meta">
+        <span class="tag">Section 1</span>
+        <span class="time">30 seconds</span>
+      </div>
+      <h2>Problem Statement</h2>
+      <p>
+        New Zealand has the largest commercial vessel camera network in the world, yet monitoring outcomes are limited by review capacity.
+        The bottleneck is analysis, not hardware. As long as most footage is not reviewed, most ecological interactions remain practically invisible.
+      </p>
+      <div class="stats">
+        <article class="stat">
+          <strong>219</strong>
+          <span>Vessels connected to the current camera network.</span>
+        </article>
+        <article class="stat">
+          <strong>27%</strong>
+          <span>Recorded footage currently reviewed.</span>
+        </article>
+        <article class="stat">
+          <strong>73%</strong>
+          <span>Unreviewed footage where bycatch events can go unseen.</span>
+        </article>
+      </div>
+    </section>
+
+    <section class="dive-section slide" id="solution" data-depth="420">
+      <div class="meta">
+        <span class="tag">Section 2</span>
+        <span class="time">2 minutes 30 seconds</span>
+      </div>
+      <h2>Our Solution</h2>
+      <p>
+        We introduce an AI review pipeline that turns passive recordings into always-on ecological intelligence.
+        Instead of reviewing random slices, the system processes full footage coverage and escalates high-risk events for targeted human verification.
+      </p>
+      <div class="solution-track" aria-label="Solution flow">
+        <article class="node">
+          <h3>Ingest</h3>
+          <p>Securely collect vessel footage and metadata streams at scale.</p>
+        </article>
+        <article class="node">
+          <h3>Detect</h3>
+          <p>Use computer vision to flag bycatch, protected species, and anomaly patterns.</p>
+        </article>
+        <article class="node">
+          <h3>Prioritize</h3>
+          <p>Rank events by ecological risk and confidence for expert review.</p>
+        </article>
+        <article class="node">
+          <h3>Report</h3>
+          <p>Generate auditable dashboards for regulators, researchers, and operators.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="dive-section slide" id="differentiate" data-depth="730">
+      <div class="meta">
+        <span class="tag">Section 3</span>
+        <span class="time">1 minute</span>
+      </div>
+      <h2>How We Differentiate</h2>
+      <p>
+        We are not adding another camera layer. We are building accountability infrastructure that closes the gap between data capture and ecological action.
+      </p>
+      <div class="points">
+        <article class="point">
+          <h3>Coverage First</h3>
+          <p>Designed for 100% footage analysis, not sample-based review.</p>
+        </article>
+        <article class="point">
+          <h3>Human + AI Loop</h3>
+          <p>AI does throughput; experts do judgement and policy interpretation.</p>
+        </article>
+        <article class="point">
+          <h3>Conservation Outcomes</h3>
+          <p>Outputs are framed for species protection and transparent enforcement.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="dive-section slide" id="future" data-depth="1000">
+      <div class="meta">
+        <span class="tag">Section 4</span>
+        <span class="time">1 minute</span>
+      </div>
+      <h2>Where The Future Will Be</h2>
+      <p>
+        The future is a national monitoring model where ecological accountability is continuous, measurable, and trusted.
+        Full-footage AI review can evolve from enforcement support into predictive conservation, helping agencies and industry intervene earlier,
+        reduce bycatch systematically, and prove progress with transparent evidence.
+      </p>
+      <div class="future-band">
+        <p>
+          Vision: move from invisible marine impact to real-time ecological stewardship backed by complete data.
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    const slides = [...document.querySelectorAll('.slide')];
+    const sections = [...document.querySelectorAll('.dive-section')];
+    const depthValue = document.getElementById('depthValue');
+    const depthFill = document.getElementById('depthFill');
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('revealed');
+        }
+      });
+    }, { threshold: 0.26 });
+
+    sections.forEach((section) => observer.observe(section));
+
+    function nearestSlideIndex() {
+      let nearestIndex = 0;
+      let nearestDistance = Number.POSITIVE_INFINITY;
+      slides.forEach((slide, index) => {
+        const distance = Math.abs(window.scrollY - slide.offsetTop);
+        if (distance < nearestDistance) {
+          nearestDistance = distance;
+          nearestIndex = index;
+        }
+      });
+      return nearestIndex;
+    }
+
+    function goToSlide(index) {
+      const clamped = Math.max(0, Math.min(slides.length - 1, index));
+      slides[clamped].scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    window.addEventListener('keydown', (event) => {
+      const targetTag = event.target && event.target.tagName ? event.target.tagName.toLowerCase() : '';
+      if (targetTag === 'input' || targetTag === 'textarea' || targetTag === 'select') {
+        return;
+      }
+
+      const currentIndex = nearestSlideIndex();
+      if (event.key === 'ArrowDown' || event.key === 'PageDown' || event.key === ' ') {
+        event.preventDefault();
+        goToSlide(currentIndex + 1);
+      } else if (event.key === 'ArrowUp' || event.key === 'PageUp') {
+        event.preventDefault();
+        goToSlide(currentIndex - 1);
+      } else if (event.key === 'Home') {
+        event.preventDefault();
+        goToSlide(0);
+      } else if (event.key === 'End') {
+        event.preventDefault();
+        goToSlide(slides.length - 1);
+      }
+    });
+
+    function updateDepthMeter() {
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = maxScroll > 0 ? window.scrollY / maxScroll : 0;
+      const depth = Math.round(progress * 1000);
+      depthValue.textContent = depth + 'm';
+      depthFill.style.width = Math.min(100, Math.max(0, progress * 100)) + '%';
+    }
+
+    updateDepthMeter();
+    window.addEventListener('scroll', updateDepthMeter, { passive: true });
+    window.addEventListener('resize', updateDepthMeter);
+  </script>
+</body>
+</html>
