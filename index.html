@@ -978,9 +978,50 @@
       return nearestIndex;
     }
 
+    let isScrolling = false;
+    let scrollAnimation = null;
+
+    function easeInOutCubic(t) {
+      return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    }
+
+    function restoreScrollSnap() {
+      document.documentElement.style.scrollSnapType = 'y mandatory';
+      document.body.style.scrollSnapType = 'y mandatory';
+    }
+
     function goToSlide(index) {
+      if (isScrolling) return;
       const clamped = Math.max(0, Math.min(slides.length - 1, index));
-      slides[clamped].scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const targetTop = slides[clamped].offsetTop;
+      const startY = window.scrollY;
+      const distance = targetTop - startY;
+      if (!distance) return;
+
+      isScrolling = true;
+      document.documentElement.style.scrollSnapType = 'none';
+      document.body.style.scrollSnapType = 'none';
+
+      const duration = 1800;
+      const startTime = performance.now();
+
+      function step(now) {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = easeInOutCubic(progress);
+        window.scrollTo(0, startY + distance * eased);
+
+        if (elapsed < duration) {
+          scrollAnimation = window.requestAnimationFrame(step);
+        } else {
+          window.scrollTo(0, targetTop);
+          restoreScrollSnap();
+          isScrolling = false;
+          scrollAnimation = null;
+        }
+      }
+
+      scrollAnimation = window.requestAnimationFrame(step);
     }
 
     window.addEventListener('keydown', (event) => {
