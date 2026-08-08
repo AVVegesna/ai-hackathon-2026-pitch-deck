@@ -250,6 +250,25 @@
       padding: clamp(1.2rem, 3.8vw, 3rem);
       box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
       /* width: min(1180px, 94%); */
+      position: relative;
+    }
+
+    .hero-badge {
+      position: absolute;
+      top: clamp(1rem, 2vw, 1.2rem);
+      right: clamp(1rem, 2vw, 1.2rem);
+      width: clamp(90px, 11vw, 130px);
+      max-width: 130px;
+      z-index: 2;
+      filter: drop-shadow(0 12px 22px rgba(0, 0, 0, 0.16));
+      opacity: 0.95;
+      border-radius: 16px;
+    }
+
+    .hero-badge svg {
+      display: block;
+      width: 100%;
+      height: auto;
     }
 
     .hero-layout {
@@ -710,36 +729,18 @@
   </aside>
 
   <main class="page">
-    <header class="hero slide section-container-width" id="intro">
+    <header class="hero slide" id="intro">
+      <img src="sdg14.avif" alt="SDG 14: Life Below Water" class="hero-badge" />
       <div class="hero-layout">
-        <div>
+        <div class="hero-copy">
           <span class="kicker">OceanEye presents</span>
-          <h1>Ecological accountability should not end at recording.</h1>
+          <h1>Making the Invisible Visible: Ending the 73% Blind Spot in New Zealand Fisheries.</h1>
           <p class="subhead">
-            Presentation structure tuned to your talk time. The story descends from problem visibility into solution
-            depth,
-            then resurfaces with strategic differentiation and future outlook.
+            Turn passive cameras into continuous ecological insight and close the gap between recording and accountability.
           </p>
-
-        </div>
-        <div>
-          <div class="timeline" aria-label="Presentation structure and timing">
-            <article class="slot">
-              <small>01</small>
-              <p>Problem statement<span class="duration">30s</span></p>
-            </article>
-            <article class="slot">
-              <small>02</small>
-              <p>Our solution<span class="duration">2m 30s</span></p>
-            </article>
-            <article class="slot">
-              <small>03</small>
-              <p>How we differentiate<span class="duration">1m</span></p>
-            </article>
-            <article class="slot">
-              <small>04</small>
-              <p>Where the future is heading<span class="duration">1m</span></p>
-            </article>
+          <div class="hero-pill-group">
+            <span class="hero-pill">73% of footage remains unseen</span>
+            <span class="hero-pill secondary">SDG 14</span>
           </div>
         </div>
       </div>
