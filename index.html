@@ -271,6 +271,31 @@
       height: auto;
     }
 
+    .hero-pill-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.85rem;
+      margin-top: 1.45rem;
+    }
+
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: 1px solid rgba(86, 212, 255, 0.22);
+      background: rgba(10, 28, 52, 0.72);
+      border-radius: 999px;
+      padding: 0.85rem 1rem;
+      font-size: 0.95rem;
+      color: #d8effd;
+      max-width: 100%;
+    }
+
+    .hero-pill.secondary {
+      background: rgba(82, 151, 193, 0.16);
+      border-color: rgba(86, 212, 255, 0.18);
+    }
+
     .hero-layout {
       display: grid;
       grid-template-columns: 1.15fr 0.85fr;
