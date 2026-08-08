@@ -198,20 +198,79 @@
     }
 
     .hero {
-      border: 1px solid var(--line);
-      background: rgba(3, 16, 31, 0.5);
-      border-radius: 24px;
-      padding: clamp(1.2rem, 3.8vw, 3rem);
-      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(173, 212, 237, 0.18);
+      background: rgba(4, 15, 32, 0.84);
+      border-radius: 28px;
+      padding: clamp(1.5rem, 4vw, 3rem);
+      box-shadow: 0 34px 80px rgba(0, 0, 0, 0.42);
       width: min(1180px, 94%);
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 18% 24%, rgba(86, 212, 255, 0.14), transparent 22%),
+        radial-gradient(circle at 76% 72%, rgba(159, 230, 255, 0.1), transparent 24%);
+      pointer-events: none;
     }
 
     .hero-layout {
       display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
-      gap: clamp(1.2rem, 3vw, 2.4rem);
+      grid-template-columns: 1fr;
+      gap: clamp(1rem, 2vw, 1.6rem);
       align-items: center;
     }
+
+    .hero-copy {
+    }
+
+    .hero-badge {
+      position: absolute;
+      top: clamp(1rem, 2vw, 1.2rem);
+      right: clamp(1rem, 2vw, 1.2rem);
+      width: clamp(90px, 11vw, 130px);
+      max-width: 130px;
+      z-index: 2;
+      filter: drop-shadow(0 12px 22px rgba(0, 0, 0, 0.16));
+      opacity: 0.95;
+      border-radius: 16px;
+    }
+
+    .hero-badge svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .hero-pill-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.85rem;
+      margin-top: 1.45rem;
+    }
+
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: 1px solid rgba(86, 212, 255, 0.22);
+      background: rgba(10, 28, 52, 0.72);
+      border-radius: 999px;
+      padding: 0.85rem 1rem;
+      font-size: 0.95rem;
+      color: #d8effd;
+      max-width: 100%;
+    }
+
+    .hero-pill.secondary {
+      background: rgba(82, 151, 193, 0.16);
+      border-color: rgba(86, 212, 255, 0.18);
+    }
+
 
     .kicker {
       display: inline-flex;
@@ -224,6 +283,7 @@
       text-transform: uppercase;
       letter-spacing: 0.1em;
       color: #d2ecfb;
+      letter-spacing: 0.14em;
     }
 
     h1,
@@ -235,17 +295,64 @@
 
     h1 {
       margin-top: 1rem;
-      font-size: clamp(2.05rem, 6vw, 4rem);
-      line-height: 1.03;
-      max-width: 13ch;
+      font-size: clamp(2.6rem, 5vw, 4.4rem);
+      line-height: 1.02;
+      max-width: 12ch;
     }
 
     .subhead {
-      margin-top: 0;
-      max-width: 68ch;
-      line-height: 1.7;
+      margin-top: 1.15rem;
+      max-width: 65ch;
+      line-height: 1.72;
       color: var(--ink-soft);
-      font-size: clamp(1rem, 2vw, 1.18rem);
+      font-size: clamp(1.02rem, 1.85vw, 1.18rem);
+    }
+
+    .timeline {
+      margin-top: 1.8rem;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.9rem;
+    }
+
+    .slot {
+      border: 1px solid rgba(174, 219, 244, 0.26);
+      border-radius: 14px;
+      background: rgba(3, 18, 36, 0.72);
+      padding: 0.86rem;
+      min-height: 92px;
+    }
+
+    .slot small {
+      color: var(--accent-cyan);
+      text-transform: uppercase;
+      font-size: 0.76rem;
+      letter-spacing: 0.1em;
+    }
+
+    .slot p {
+      margin-top: 0.5rem;
+      color: #ecf8ff;
+      line-height: 1.55;
+      font-size: 0.98rem;
+    }
+
+    .slot .duration {
+      display: block;
+      margin-top: 0.4rem;
+      color: #91d7f5;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .hero-card-large {
+      min-height: 210px;
+    }
+
+    .hero-card strong {
+      display: block;
+      margin-top: 0.35rem;
+      font-weight: 700;
     }
 
     .timeline {
@@ -501,6 +608,18 @@
         grid-template-columns: 1fr;
       }
 
+      .hero-panel {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-card-large {
+        min-height: auto;
+      }
+
+      .hero-copy {
+        text-align: left;
+      }
+
       .subhead {
         margin-top: 1rem;
       }
@@ -576,37 +695,38 @@
 
   <main class="page">
     <header class="hero slide" id="intro">
+      <img src="sdg14.avif" alt="SDG 14: Life Below Water" class="hero-badge" />
       <div class="hero-layout">
-        <div>
+        <div class="hero-copy">
           <span class="kicker">OceanEye presents</span>
-          <h1>Ecological accountability should not end at recording.</h1>
-        </div>
-        <div>
+          <h1>Making the Invisible Visible: Ending the 73% Blind Spot in New Zealand Fisheries.</h1>
           <p class="subhead">
-            Presentation structure tuned to your talk time. The story descends from problem visibility into solution depth,
-            then resurfaces with strategic differentiation and future outlook.
+            Turn passive cameras into continuous ecological insight and close the gap between recording and accountability.
           </p>
-          <div class="timeline" aria-label="Presentation structure and timing">
-            <article class="slot">
-              <small>01</small>
-              <p>Problem statement<span class="duration">30s</span></p>
-            </article>
-            <article class="slot">
-              <small>02</small>
-              <p>Our solution<span class="duration">2m 30s</span></p>
-            </article>
-            <article class="slot">
-              <small>03</small>
-              <p>How we differentiate<span class="duration">1m</span></p>
-            </article>
-            <article class="slot">
-              <small>04</small>
-              <p>Where the future is heading<span class="duration">1m</span></p>
-            </article>
+          <div class="hero-pill-group">
+            <span class="hero-pill">73% of footage remains unseen</span>
+            <span class="hero-pill secondary">SDG 14</span>
           </div>
         </div>
       </div>
     </header>
+
+    <section class="dive-section slide" id="overview" data-depth="120">
+      <div class="meta">
+        <span class="tag">Overview</span>
+        <span class="time">30 seconds</span>
+      </div>
+      <h2>The problem is review, not cameras</h2>
+      <p>
+        New Zealand already has extensive vessel camera coverage, but most footage is never reviewed. That means bycatch and protected species impacts remain largely invisible.
+      </p>
+      <div class="stats">
+        <article class="stat">
+          <strong>73%</strong>
+          <span>of footage is unreviewed and effectively blind to ecological risk.</span>
+        </article>
+      </div>
+    </section>
 
     <section class="dive-section slide" id="problem" data-depth="120">
       <div class="meta">
@@ -738,9 +858,50 @@
       return nearestIndex;
     }
 
+    let isScrolling = false;
+    let scrollAnimation = null;
+
+    function easeInOutCubic(t) {
+      return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    }
+
+    function restoreScrollSnap() {
+      document.documentElement.style.scrollSnapType = 'y mandatory';
+      document.body.style.scrollSnapType = 'y mandatory';
+    }
+
     function goToSlide(index) {
+      if (isScrolling) return;
       const clamped = Math.max(0, Math.min(slides.length - 1, index));
-      slides[clamped].scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const targetTop = slides[clamped].offsetTop;
+      const startY = window.scrollY;
+      const distance = targetTop - startY;
+      if (!distance) return;
+
+      isScrolling = true;
+      document.documentElement.style.scrollSnapType = 'none';
+      document.body.style.scrollSnapType = 'none';
+
+      const duration = 1800;
+      const startTime = performance.now();
+
+      function step(now) {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = easeInOutCubic(progress);
+        window.scrollTo(0, startY + distance * eased);
+
+        if (elapsed < duration) {
+          scrollAnimation = window.requestAnimationFrame(step);
+        } else {
+          window.scrollTo(0, targetTop);
+          restoreScrollSnap();
+          isScrolling = false;
+          scrollAnimation = null;
+        }
+      }
+
+      scrollAnimation = window.requestAnimationFrame(step);
     }
 
     window.addEventListener('keydown', (event) => {
