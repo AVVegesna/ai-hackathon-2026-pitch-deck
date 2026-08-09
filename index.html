@@ -758,6 +758,9 @@
 
     #future .points {
       margin-top: clamp(1.6rem, 4vw, 2.6rem);
+      /* Two beats now that cost is cut, so don't let the cards sprawl. */
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      max-width: 46rem;
     }
 
     #future .point {
@@ -1022,10 +1025,6 @@
           </div>
           <h2>Future Impact</h2>
           <div class="points">
-            <article class="point">
-              <h3>Cheaper coverage</h3>
-              <p>More boats. Smaller levy.</p>
-            </article>
             <article class="point">
               <h3>Real numbers</h3>
               <p>What&rsquo;s actually in the nets.</p>
