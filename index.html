@@ -747,6 +747,49 @@
         top: 12px;
       }
     }
+
+    /* Future Impact slide only. Few words, so give them room. */
+    #future h2 {
+      font-size: clamp(1.9rem, 5vw, 3rem);
+      line-height: 1.04;
+      text-wrap: balance;
+      margin-bottom: 0;
+    }
+
+    #future .points {
+      margin-top: clamp(1.6rem, 4vw, 2.6rem);
+    }
+
+    #future .point {
+      padding: 1.25rem 1.35rem 1.35rem;
+    }
+
+    /* Label small and quiet, statement big. */
+    #future .point h3 {
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      font-weight: 600;
+      color: var(--accent-cyan);
+      margin-bottom: 0.6rem;
+    }
+
+    #future .point p {
+      font-size: clamp(1.05rem, 2.2vw, 1.5rem);
+      line-height: 1.28;
+      color: #f2fbff;
+    }
+
+    #future .future-band {
+      padding: clamp(1rem, 2.4vw, 1.5rem) clamp(1.1rem, 2.8vw, 1.8rem);
+    }
+
+    #future .future-band p {
+      font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+      line-height: 1.38;
+      max-width: 44ch;
+      color: #eaf7ff;
+    }
   </style>
 </head>
 
@@ -976,22 +1019,27 @@
         <div>
           <div class="meta">
             <span class="tag">Section 4</span>
-            <span class="time">1 minute</span>
           </div>
-          <h2>Where The Future Will Be</h2>
-          <p>
-            The future is a national monitoring model where ecological accountability is continuous, measurable, and
-            trusted.
-            Full-footage AI review can evolve from enforcement support into predictive conservation, helping agencies
-            and
-            industry intervene earlier,
-            reduce bycatch systematically, and prove progress with transparent evidence.
-          </p>
+          <h2>Future Impact</h2>
+          <div class="points">
+            <article class="point">
+              <h3>Cheaper coverage</h3>
+              <p>More boats. Smaller levy.</p>
+            </article>
+            <article class="point">
+              <h3>Real numbers</h3>
+              <p>What&rsquo;s actually in the nets.</p>
+            </article>
+            <article class="point">
+              <h3>Back to the skippers</h3>
+              <p>Something they can use.</p>
+            </article>
+          </div>
         </div>
         <div>
           <div class="future-band">
             <p>
-              Vision: move from invisible marine impact to real-time ecological stewardship backed by complete data.
+              We&rsquo;re deciding how much fish comes out, on numbers we know are wrong.
             </p>
           </div>
 
